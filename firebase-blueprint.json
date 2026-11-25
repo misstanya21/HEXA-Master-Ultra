@@ -1,0 +1,195 @@
+{
+  "entities": {
+    "PlayerCloudSave": {
+      "title": "PlayerCloudSave",
+      "description": "Cloud-backed puzzle progression, currencies, lifetime stats, and settings for a signed-in player.",
+      "type": "object",
+      "properties": {
+        "userId": {
+          "type": "string",
+          "description": "Authenticated Firebase user UID owning this cloud save."
+        },
+        "displayName": {
+          "type": "string",
+          "description": "Player display name."
+        },
+        "currentLevel": {
+          "type": "integer",
+          "description": "Current active classic puzzle level."
+        },
+        "highestLevel": {
+          "type": "integer",
+          "description": "Highest classic puzzle level reached."
+        },
+        "coins": {
+          "type": "integer",
+          "description": "Saved coin balance."
+        },
+        "gems": {
+          "type": "integer",
+          "description": "Saved gem balance."
+        },
+        "totalScore": {
+          "type": "integer",
+          "description": "Cumulative career puzzle score across all levels and modes."
+        },
+        "bestTimeAttackScore": {
+          "type": "integer",
+          "description": "Best score achieved in 90s Time Attack mode."
+        },
+        "bestEndlessScore": {
+          "type": "integer",
+          "description": "Best score achieved in Endless mode."
+        },
+        "totalLevelsCompleted": {
+          "type": "integer",
+          "description": "Total puzzle levels completed."
+        },
+        "totalMerges": {
+          "type": "integer",
+          "description": "Total hexagonal tile merges performed."
+        },
+        "totalStacksCleared": {
+          "type": "integer",
+          "description": "Total 10+ tile stacks cleared."
+        },
+        "bestComboEver": {
+          "type": "integer",
+          "description": "Highest combo multiplier achieved."
+        },
+        "totalObstaclesCleared": {
+          "type": "integer",
+          "description": "Total board obstacles cleared."
+        },
+        "consecutiveDays": {
+          "type": "integer",
+          "description": "Daily reward streak count."
+        },
+        "unlockedTrophies": {
+          "type": "integer",
+          "description": "Number of unlocked profile trophies."
+        },
+        "hasNoAds": {
+          "type": "boolean",
+          "description": "Whether No-Ads pack is unlocked."
+        },
+        "isColorblindMode": {
+          "type": "boolean",
+          "description": "Accessibility colorblind mode toggle state."
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Server timestamp of initial cloud save (FieldValue.serverTimestamp())."
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Server timestamp of last cloud sync (FieldValue.serverTimestamp())."
+        }
+      },
+      "required": [
+        "userId",
+        "displayName",
+        "currentLevel",
+        "highestLevel",
+        "coins",
+        "gems",
+        "totalScore",
+        "bestTimeAttackScore",
+        "bestEndlessScore",
+        "totalLevelsCompleted",
+        "totalMerges",
+        "totalStacksCleared",
+        "bestComboEver",
+        "totalObstaclesCleared",
+        "consecutiveDays",
+        "unlockedTrophies",
+        "hasNoAds",
+        "isColorblindMode",
+        "createdAt",
+        "updatedAt"
+      ]
+    },
+    "LeaderboardEntry": {
+      "title": "LeaderboardEntry",
+      "description": "Public global leaderboard record for an authenticated player.",
+      "type": "object",
+      "properties": {
+        "userId": {
+          "type": "string",
+          "description": "Authenticated Firebase user UID owning this leaderboard entry."
+        },
+        "playerName": {
+          "type": "string",
+          "description": "Public player display name shown on the global leaderboard."
+        },
+        "rankTitle": {
+          "type": "string",
+          "description": "Player rank title based on unlocked trophies."
+        },
+        "rankEmoji": {
+          "type": "string",
+          "description": "Emoji badge representing player rank."
+        },
+        "totalScore": {
+          "type": "integer",
+          "description": "Total career score."
+        },
+        "highestLevel": {
+          "type": "integer",
+          "description": "Highest classic level reached."
+        },
+        "bestTimeAttackScore": {
+          "type": "integer",
+          "description": "Best score in Time Attack mode."
+        },
+        "bestEndlessScore": {
+          "type": "integer",
+          "description": "Best score in Endless mode."
+        },
+        "unlockedTrophies": {
+          "type": "integer",
+          "description": "Total trophies unlocked."
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Server timestamp when entry was created (FieldValue.serverTimestamp())."
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Server timestamp when entry was updated (FieldValue.serverTimestamp())."
+        }
+      },
+      "required": [
+        "userId",
+        "playerName",
+        "rankTitle",
+        "rankEmoji",
+        "totalScore",
+        "highestLevel",
+        "bestTimeAttackScore",
+        "bestEndlessScore",
+        "unlockedTrophies",
+        "createdAt",
+        "updatedAt"
+      ]
+    }
+  },
+  "firestore": {
+    "/users/{userId}": {
+      "schema": {
+        "$ref": "#/entities/PlayerCloudSave"
+      },
+      "description": "Private per-user cloud save document preserving game progress, currencies, and stats across devices."
+    },
+    "/leaderboard/{userId}": {
+      "schema": {
+        "$ref": "#/entities/LeaderboardEntry"
+      },
+      "description": "Global leaderboard entries indexed by UID so each player owns one authoritative leaderboard row."
+    }
+  }
+}

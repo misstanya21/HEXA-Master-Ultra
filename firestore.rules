@@ -1,0 +1,157 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Default-deny global safety net
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    // Reusable hardened security helpers
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function incoming() {
+      return request.resource.data;
+    }
+
+    function existing() {
+      return resource.data;
+    }
+
+    function isValidId(id) {
+      return id is string && id.size() >= 1 && id.size() <= 128 && id.matches('^[a-zA-Z0-9_\\-]+$');
+    }
+
+    function isValidPlayerCloudSave(data) {
+      return data.userId is string && data.userId.size() >= 1 && data.userId.size() <= 128 &&
+             data.displayName is string && data.displayName.size() >= 1 && data.displayName.size() <= 40 &&
+             data.currentLevel is int && data.currentLevel >= 1 && data.currentLevel <= 10000 &&
+             data.highestLevel is int && data.highestLevel >= 1 && data.highestLevel <= 10000 &&
+             data.coins is int && data.coins >= 0 && data.coins <= 100000000 &&
+             data.gems is int && data.gems >= 0 && data.gems <= 10000000 &&
+             data.totalScore is int && data.totalScore >= 0 && data.totalScore <= 1000000000 &&
+             data.bestTimeAttackScore is int && data.bestTimeAttackScore >= 0 && data.bestTimeAttackScore <= 100000000 &&
+             data.bestEndlessScore is int && data.bestEndlessScore >= 0 && data.bestEndlessScore <= 100000000 &&
+             data.totalLevelsCompleted is int && data.totalLevelsCompleted >= 0 && data.totalLevelsCompleted <= 100000 &&
+             data.totalMerges is int && data.totalMerges >= 0 && data.totalMerges <= 100000000 &&
+             data.totalStacksCleared is int && data.totalStacksCleared >= 0 && data.totalStacksCleared <= 10000000 &&
+             data.bestComboEver is int && data.bestComboEver >= 1 && data.bestComboEver <= 10000 &&
+             data.totalObstaclesCleared is int && data.totalObstaclesCleared >= 0 && data.totalObstaclesCleared <= 10000000 &&
+             data.consecutiveDays is int && data.consecutiveDays >= 1 && data.consecutiveDays <= 10000 &&
+             data.unlockedTrophies is int && data.unlockedTrophies >= 0 && data.unlockedTrophies <= 100 &&
+             data.hasNoAds is bool &&
+             data.isColorblindMode is bool;
+    }
+
+    function isValidLeaderboardEntry(data) {
+      return data.userId is string && data.userId.size() >= 1 && data.userId.size() <= 128 &&
+             data.playerName is string && data.playerName.size() >= 1 && data.playerName.size() <= 40 &&
+             data.rankTitle is string && data.rankTitle.size() >= 1 && data.rankTitle.size() <= 30 &&
+             data.rankEmoji is string && data.rankEmoji.size() >= 1 && data.rankEmoji.size() <= 12 &&
+             data.totalScore is int && data.totalScore >= 0 && data.totalScore <= 1000000000 &&
+             data.highestLevel is int && data.highestLevel >= 1 && data.highestLevel <= 10000 &&
+             data.bestTimeAttackScore is int && data.bestTimeAttackScore >= 0 && data.bestTimeAttackScore <= 100000000 &&
+             data.bestEndlessScore is int && data.bestEndlessScore >= 0 && data.bestEndlessScore <= 100000000 &&
+             data.unlockedTrophies is int && data.unlockedTrophies >= 0 && data.unlockedTrophies <= 100;
+    }
+
+    // 1. Private Cloud Save: strictly isolated to the owning signed-in user
+    match /users/{userId} {
+      allow get: if isSignedIn() && isValidId(userId) && request.auth.uid == userId;
+      allow list: if isSignedIn() && resource.data.userId == request.auth.uid;
+
+      allow create: if isSignedIn() &&
+                       isValidId(userId) &&
+                       request.auth.uid == userId &&
+                       incoming().userId == request.auth.uid &&
+                       incoming().keys().hasAll([
+                         'userId', 'displayName', 'currentLevel', 'highestLevel',
+                         'coins', 'gems', 'totalScore', 'bestTimeAttackScore',
+                         'bestEndlessScore', 'totalLevelsCompleted', 'totalMerges',
+                         'totalStacksCleared', 'bestComboEver', 'totalObstaclesCleared',
+                         'consecutiveDays', 'unlockedTrophies', 'hasNoAds',
+                         'isColorblindMode', 'createdAt', 'updatedAt'
+                       ]) &&
+                       incoming().keys().hasOnly([
+                         'userId', 'displayName', 'currentLevel', 'highestLevel',
+                         'coins', 'gems', 'totalScore', 'bestTimeAttackScore',
+                         'bestEndlessScore', 'totalLevelsCompleted', 'totalMerges',
+                         'totalStacksCleared', 'bestComboEver', 'totalObstaclesCleared',
+                         'consecutiveDays', 'unlockedTrophies', 'hasNoAds',
+                         'isColorblindMode', 'createdAt', 'updatedAt'
+                       ]) &&
+                       incoming().createdAt is timestamp &&
+                       incoming().createdAt <= request.time &&
+                       incoming().updatedAt is timestamp &&
+                       incoming().updatedAt <= request.time &&
+                       isValidPlayerCloudSave(incoming());
+
+      allow update: if isSignedIn() &&
+                       isValidId(userId) &&
+                       request.auth.uid == userId &&
+                       isValidPlayerCloudSave(incoming()) &&
+                       incoming().userId == existing().userId &&
+                       incoming().createdAt == existing().createdAt &&
+                       incoming().updatedAt is timestamp &&
+                       incoming().updatedAt <= request.time &&
+                       incoming().diff(existing()).affectedKeys().hasOnly([
+                         'displayName', 'currentLevel', 'highestLevel',
+                         'coins', 'gems', 'totalScore', 'bestTimeAttackScore',
+                         'bestEndlessScore', 'totalLevelsCompleted', 'totalMerges',
+                         'totalStacksCleared', 'bestComboEver', 'totalObstaclesCleared',
+                         'consecutiveDays', 'unlockedTrophies', 'hasNoAds',
+                         'isColorblindMode', 'updatedAt'
+                       ]);
+
+      allow delete: if isSignedIn() && isValidId(userId) && request.auth.uid == userId;
+    }
+
+    // 2. Global Leaderboard: any signed-in user can read/query bounded leaderboard rankings;
+    //    only the owning user can create/update/delete their own entry.
+    match /leaderboard/{entryId} {
+      allow get: if isSignedIn() && isValidId(entryId);
+      allow list: if isSignedIn() &&
+                     (resource.data.totalScore >= 0 ||
+                      resource.data.bestTimeAttackScore >= 0 ||
+                      resource.data.bestEndlessScore >= 0 ||
+                      resource.data.highestLevel >= 1);
+
+      allow create: if isSignedIn() &&
+                       isValidId(entryId) &&
+                       request.auth.uid == entryId &&
+                       incoming().userId == request.auth.uid &&
+                       incoming().keys().hasAll([
+                         'userId', 'playerName', 'rankTitle', 'rankEmoji',
+                         'totalScore', 'highestLevel', 'bestTimeAttackScore',
+                         'bestEndlessScore', 'unlockedTrophies', 'createdAt', 'updatedAt'
+                       ]) &&
+                       incoming().keys().hasOnly([
+                         'userId', 'playerName', 'rankTitle', 'rankEmoji',
+                         'totalScore', 'highestLevel', 'bestTimeAttackScore',
+                         'bestEndlessScore', 'unlockedTrophies', 'createdAt', 'updatedAt'
+                       ]) &&
+                       incoming().createdAt is timestamp &&
+                       incoming().createdAt <= request.time &&
+                       incoming().updatedAt is timestamp &&
+                       incoming().updatedAt <= request.time &&
+                       isValidLeaderboardEntry(incoming());
+
+      allow update: if isSignedIn() &&
+                       isValidId(entryId) &&
+                       request.auth.uid == entryId &&
+                       isValidLeaderboardEntry(incoming()) &&
+                       incoming().userId == existing().userId &&
+                       incoming().createdAt == existing().createdAt &&
+                       incoming().updatedAt is timestamp &&
+                       incoming().updatedAt <= request.time &&
+                       incoming().diff(existing()).affectedKeys().hasOnly([
+                         'playerName', 'rankTitle', 'rankEmoji',
+                         'totalScore', 'highestLevel', 'bestTimeAttackScore',
+                         'bestEndlessScore', 'unlockedTrophies', 'updatedAt'
+                       ]);
+
+      allow delete: if isSignedIn() && isValidId(entryId) && request.auth.uid == entryId;
+    }
+  }
+}

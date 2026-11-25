@@ -1,0 +1,70 @@
+============================================================
+HEXA MASTER ULTRA — APKPURE STORE SUBMISSION DETAILS
+============================================================
+
+1. BASIC APP METADATA
+------------------------------------------------------------
+App Name            : HEXA Master Ultra
+Package Name (ID)   : com.aistudio.colorslide.hexpz
+Version Name        : 2.0
+Version Code        : 2
+Min Android Version : Android 7.0 (API 24)
+Target SDK          : API 36
+Category            : Games > Puzzle (Secondary: Casual)
+Content / Age Rating: Everyone / 3+ (PEGI 3)
+Price               : Free (Currently Ad-Free, No Real-Money IAP)
+Supported Languages : English (with Colorblind Numerical Symbol Mode)
+Screen Orientation  : Portrait
+
+2. GRAPHIC ASSETS (Located in apkpure_assets/ folder)
+------------------------------------------------------------
+- App Icon / Logo    : apkpure_assets/logo_512x512.png (512 x 512 PNG)
+- Feature Banner     : apkpure_assets/banner_1024x500.png (1024 x 500 PNG)
+- Screenshot 1       : apkpure_assets/screenshot_1_gameplay.png (1080 x 1920 PNG)
+- Screenshot 2       : apkpure_assets/screenshot_2_modes.png (1080 x 1920 PNG)
+- Screenshot 3       : apkpure_assets/screenshot_3_combos.png (1080 x 1920 PNG)
+- Screenshot 4       : apkpure_assets/screenshot_4_leaderboard.png (1080 x 1920 PNG)
+- Screenshot 5       : apkpure_assets/screenshot_5_time_attack.png (1080 x 1920 PNG)
+- Screenshot 6       : apkpure_assets/screenshot_6_level_clear.png (1080 x 1920 PNG)
+(Tip: You may also capture live device screenshots directly from HEXA_Master_Ultra_release.apk if preferred.)
+
+3. SHORT DESCRIPTION (Max 80 characters)
+------------------------------------------------------------
+Stack, snap & merge 3D hex tiles! 3 modes, daily missions & global leaderboards.
+
+4. FULL DESCRIPTION (English — Ready to Paste)
+------------------------------------------------------------
+Welcome to HEXA Master Ultra — a vibrant, smooth 3D hexagonal stacking & color-merge puzzle game designed for quick fun and deep strategy!
+
+KEY FEATURES:
+• Effortless Offset Drag & Magnetic Snap: Drag tile stacks cleanly above your fingertip with zero finger occlusion and feel tiles magnetically snap onto the hex board!
+• Explosive Chain Combos & Fireworks: Stack 10+ matching tiles to trigger dazzling sparks, shockwaves, fireworks, and screen-shake effects.
+• Three Exciting Game Modes:
+  1. Classic Levels — Handcrafted stages with Coins, Robots, Honeycombs, Stars, Lightning & Cake obstacles.
+  2. Time Attack (90s Rush) — Beat the clock! Every cleared stack grants bonus seconds.
+  3. Endless Mode — Unlimited puzzle waves with escalating challenge and high-score chasing.
+• Daily Missions & Profile Trophies: Complete rotating daily tasks to earn Coins & Gems and unlock Bronze to Diamond milestone badges.
+• Cloud Save & Global Leaderboard: Sign in with Google to safeguard your progress across devices and compete globally across Career Score, Top Level, Time Attack & Endless rankings.
+• Helpful Boosters & Accessibility: Undo, Shuffle, Smart Hint, Hammer Smash, Pinwheel Storm, Low-Effects mode, and full Colorblind Numerical Symbol mode.
+
+5. KEYWORDS / TAGS (Comma-separated)
+------------------------------------------------------------
+hexa puzzle, hexagon sort, color merge, stack puzzle, brain game, casual puzzle, time attack, endless puzzle, offline puzzle, leaderboard
+
+6. PERMISSIONS DECLARED (All Standard / Safe)
+------------------------------------------------------------
+- INTERNET (for Cloud Save, Google Sign-In & Global Leaderboard)
+- ACCESS_NETWORK_STATE (connectivity check)
+- VIBRATE (optional haptic feedback toggle in Settings)
+
+7. PRIVACY POLICY TEMPLATE (Host on Google Sites / GitHub Pages)
+------------------------------------------------------------
+Title: Privacy Policy for HEXA Master Ultra
+Effective Date: 2026-11-14
+
+HEXA Master Ultra respects your privacy.
+- Offline Play: All core puzzle modes can be played locally on your device, with progress saved locally via SharedPreferences.
+- Optional Cloud Save & Global Leaderboard: If you choose to sign in with Google, we securely store your game progress (level, coins, gems, scores, and trophy count) and display name in Firebase Firestore so you can restore your data across devices and appear on the Global Leaderboard.
+- Data Deletion & Contact: You may sign out at any time from the Leaderboard screen. To request deletion of your cloud save data, contact: [YOUR_SUPPORT_EMAIL@example.com]
+- Advertising: This release contains no third-party advertisements or real-money purchases.
+============================================================

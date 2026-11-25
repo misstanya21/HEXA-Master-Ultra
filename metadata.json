@@ -1,0 +1,6 @@
+{
+  "name": "HEXA Master Ultra",
+  "description": "High-performance 3D hexagonal stacking puzzle game featuring drag & drop mechanics, accordion cascades, Undo/Hint/Shuffle boosters, procedural audio BGM, and progressive challenges.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

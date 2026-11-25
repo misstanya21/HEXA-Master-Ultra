@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">HEXA Master Ultra</string>
+    <string name="loading_label">Loading…</string>
+    <string name="support_button_label">SUPPORT</string>
+    <string name="support_dialog_title">Player Support</string>
+    <string name="support_dialog_continue">Continue</string>
+</resources>
